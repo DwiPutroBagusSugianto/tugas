@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Perbaikan Viewport: Menghapus user-scalable=no agar user bisa zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Aplikasi Manajemen Tugas Aksesibel">
     <title>Mobile UI UX Aksesibel</title>
     
@@ -12,14 +13,14 @@
     <style>
         /* --- RESET & VARIABLES --- */
         :root {
-            /* Warna dengan rasio kontras tinggi (WCAG AA/AAA) */
-            --primary-color: #2563EB; /* Blue 600 */
-            --primary-dark: #1E40AF;
-            --accent-color: #DC2626; /* Red 600 */
+            /* Warna dengan rasio kontras AAA/Fail-safe */
+            --primary-color: #1E40AF; /* Blue 800 - Lebih gelap untuk kontras */
+            --primary-bg: #EFF6FF; /* Blue 50 */
+            --accent-color: #B91C1C; /* Red 700 */
             --bg-color: #F3F4F6;
             --surface-color: #FFFFFF;
             --text-main: #111827; /* Gray 900 */
-            --text-secondary: #4B5563; /* Gray 600 */
+            --text-secondary: #374151; /* Gray 700 - Lebih gelap dari sebelumnya */
             --focus-ring: #000000;
             
             --border-radius: 12px;
@@ -31,7 +32,7 @@
             --transition: all 0.3s ease;
         }
 
-        /* Utilitas Screen Reader Only (SR Only) */
+        /* Utilitas Screen Reader Only */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -44,14 +45,13 @@
             border: 0;
         }
 
-        /* Focus Style Jelas untuk Navigasi Keyboard */
+        /* Focus Style yang kuat */
         *:focus-visible {
             outline: 3px solid var(--focus-ring);
             outline-offset: 2px;
             border-radius: 4px;
         }
 
-        /* Hapus outline default browser karena kita pakai focus-visible */
         *:focus {
             outline: none;
         }
@@ -69,7 +69,7 @@
             color: var(--text-main);
             overflow-x: hidden;
             padding-bottom: calc(var(--bottom-nav-height) + 20px);
-            font-size: 16px; /* Base size yang disarankan aksesibilitas */
+            font-size: 16px;
         }
 
         /* --- HEADER --- */
@@ -94,11 +94,11 @@
 
         .burger-btn {
             background: none;
-            border: 2px solid transparent; /* Frame tetap untuk stabilitas layout */
+            border: 2px solid transparent;
             font-size: 1.2rem;
             color: var(--text-main);
             cursor: pointer;
-            width: 44px; /* Minimal touch target */
+            width: 44px;
             height: 44px;
             border-radius: 8px;
             display: flex;
@@ -136,15 +136,11 @@
             animation: spin 1s linear infinite;
         }
         
-        .refresh-btn:hover {
-            color: var(--primary-color);
-        }
-
         @keyframes spin {
             100% { transform: rotate(360deg); }
         }
 
-        /* --- TOP APP MENU (SUBMENU / CHIPS) --- */
+        /* --- TOP APP MENU (SUBMENU) --- */
         .top-menu {
             background-color: var(--surface-color);
             padding: 12px 16px;
@@ -158,7 +154,6 @@
             display: none;
         }
 
-        /* Menggunakan button untuk aksesibilitas keyboard native */
         .menu-chip {
             display: inline-block;
             padding: 8px 16px;
@@ -167,7 +162,7 @@
             font-size: 0.95rem;
             color: var(--text-secondary);
             background-color: var(--bg-color);
-            border: 2px solid transparent; /* Agar layout tidak bergeser saat focus */
+            border: 2px solid transparent;
             cursor: pointer;
             transition: var(--transition);
             font-weight: 600;
@@ -188,7 +183,6 @@
             background-color: var(--surface-color);
             padding: 0 16px;
             border-bottom: 1px solid #e5e7eb;
-            role: "tablist";
         }
 
         .tab-item {
@@ -201,7 +195,7 @@
             font-weight: 600;
             background: none;
             border: none;
-            border-bottom: 3px solid transparent; /* Placeholder untuk border */
+            border-bottom: 3px solid transparent;
         }
         
         .tab-item[aria-selected="true"] {
@@ -248,11 +242,11 @@
         }
 
         .card-tag {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: var(--primary-color);
-            background: #eff6ff;
+            color: #065F46; /* Green 800 - Kontras Tinggi */
+            background: #D1FAE5; /* Green 100 */
             padding: 4px 8px;
             border-radius: 4px;
             font-weight: 700;
@@ -279,23 +273,25 @@
             padding-top: 12px;
         }
 
+        /* Perbaikan Kontras Tombol Hapus: Gaya Outline Merah di Putih */
         .btn-delete {
-            background: #FEF2F2;
+            background: #FFFFFF;
             border: 1px solid #FECACA;
             color: var(--accent-color);
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
             padding: 8px 16px;
             border-radius: 6px;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .btn-delete:hover, .btn-delete:focus {
-            background-color: #FEE2E2;
+            background-color: #FEF2F2;
+            border-color: var(--accent-color);
         }
 
         /* --- BOTTOM MENU --- */
@@ -351,7 +347,7 @@
             height: calc(100% - 8px);
         }
 
-        /* --- DRAWER (SIDEBAR) --- */
+        /* --- DRAWER --- */
         .drawer-overlay {
             position: fixed;
             top: 0;
@@ -370,6 +366,7 @@
             visibility: visible;
         }
 
+        /* Menggunakan div dengan role="dialog" alih-alih aside untuk validasi ARIA yang lebih ketat */
         .drawer {
             position: fixed;
             top: 0;
@@ -481,13 +478,12 @@
 </head>
 <body>
 
-    <!-- SCREEN READER ANNOUNCER (Penting untuk Accessibility) -->
+    <!-- SCREEN READER ANNOUNCER -->
     <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
     <!-- HEADER -->
     <header>
         <div class="header-left">
-            <!-- Burger Button dengan ARIA yang lengkap -->
             <button class="burger-btn" id="burgerBtn" aria-label="Buka menu navigasi" aria-controls="drawer" aria-expanded="false">
                 <i class="fas fa-bars"></i>
             </button>
@@ -499,7 +495,7 @@
     </header>
 
     <!-- TOP APP MENU (SUBMENU) -->
-    <nav class="top-menu" role="group" aria-label="Filter Kategori">
+    <nav class="top-menu" aria-label="Filter Kategori">
         <button class="menu-chip active" aria-pressed="true" onclick="filterMenu(this)">Semua</button>
         <button class="menu-chip" aria-pressed="false" onclick="filterMenu(this)">Pekerjaan</button>
         <button class="menu-chip" aria-pressed="false" onclick="filterMenu(this)">Pribadi</button>
@@ -509,14 +505,17 @@
 
     <!-- TABS BAR -->
     <div class="tabs-container" role="tablist" aria-label="Tampilan Tugas">
-        <button class="tab-item" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" onclick="switchTab(this)">Aktif</button>
-        <button class="tab-item" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" onclick="switchTab(this)">Selesai</button>
-        <button class="tab-item" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" onclick="switchTab(this)">Arsip</button>
+        <button class="tab-item" role="tab" aria-selected="true" id="tab-1" onclick="switchTab(this)">Aktif</button>
+        <button class="tab-item" role="tab" aria-selected="false" id="tab-2" onclick="switchTab(this)">Selesai</button>
+        <button class="tab-item" role="tab" aria-selected="false" id="tab-3" onclick="switchTab(this)">Arsip</button>
     </div>
 
     <!-- MAIN CONTENT -->
     <main id="main-content">
-        <section class="card-list" aria-label="Daftar Tugas">
+        <!-- Perbaikan Heading Hierarchy: H1 di Header, H2 tersembunyi di sini, H3 di Card -->
+        <h2 class="sr-only">Daftar Tugas</h2>
+        
+        <section class="card-list" aria-label="Daftar Tugas Aktif">
             
             <!-- CARD 1 -->
             <article class="card" id="card-1" tabindex="0" aria-labelledby="card-1-title">
@@ -526,6 +525,7 @@
                         <i class="fas fa-ellipsis-h"></i>
                     </button>
                 </div>
+                <!-- Menggunakan H3 sesuai hierarki H1 -> H2 -> H3 -->
                 <h3 class="card-title" id="card-1-title">Revisi Desain UI</h3>
                 <p class="card-desc">Perbarui wireframe untuk halaman dashboard sesuai feedback dari klien.</p>
                 <div class="card-actions">
@@ -538,7 +538,8 @@
             <!-- CARD 2 -->
             <article class="card" id="card-2" tabindex="0" aria-labelledby="card-2-title">
                 <div class="card-header">
-                    <span class="card-tag" style="color: #D97706; background: #FEF3C7;">Belanja</span>
+                    <!-- Tag warna kontras tinggi -->
+                    <span class="card-tag" style="color: #92400E; background: #FEF3C7;">Belanja</span>
                     <button aria-label="Opsi lain untuk Belanja Bulanan" style="background:none; border:none; color:#6B7280; cursor:pointer;">
                         <i class="fas fa-ellipsis-h"></i>
                     </button>
@@ -555,7 +556,7 @@
             <!-- CARD 3 -->
             <article class="card" id="card-3" tabindex="0" aria-labelledby="card-3-title">
                 <div class="card-header">
-                    <span class="card-tag" style="color: #059669; background: #D1FAE5;">Pribadi</span>
+                    <span class="card-tag" style="color: #065F46; background: #D1FAE5;">Pribadi</span>
                     <button aria-label="Opsi lain untuk Lari Pagi" style="background:none; border:none; color:#6B7280; cursor:pointer;">
                         <i class="fas fa-ellipsis-h"></i>
                     </button>
@@ -573,6 +574,7 @@
     </main>
 
     <!-- BOTTOM MENU -->
+    <!-- Menghilangkan role="navigation" karena tag <nav> sudah implisit -->
     <nav class="bottom-nav" aria-label="Navigasi Bawah">
         <button class="nav-item" aria-current="page" onclick="setActiveNav(this)">
             <i class="fas fa-home"></i>
@@ -592,9 +594,11 @@
         </button>
     </nav>
 
-    <!-- DRAWER (BURGER MENU) -->
+    <!-- DRAWER -->
     <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
-    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu Utama">
+    
+    <!-- Mengubah <aside> menjadi <div> dengan role="dialog" untuk validasi ARIA -->
+    <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu Utama">
         <div class="drawer-header">
             <h2 style="font-size: 1.2rem;">Menu Utama</h2>
             <p style="font-size: 0.85rem; opacity: 0.8;">Selamat datang kembali!</p>
@@ -606,7 +610,7 @@
             <a href="#" class="drawer-link"><i class="fas fa-chart-line"></i> Statistik</a>
             <a href="#" class="drawer-link" style="margin-top: auto;"><i class="fas fa-sign-out-alt"></i> Keluar</a>
         </nav>
-    </aside>
+    </div>
 
     <!-- TOAST NOTIFICATION -->
     <div class="toast" id="toast" role="status" aria-live="polite">
@@ -616,11 +620,9 @@
 
     <script>
         // --- UTILITAS: SCREEN READER ANNOUNCER ---
-        // Fungsi untuk membacakan teks ke Screen Reader
         function announceToSR(message) {
             const announcer = document.getElementById('sr-announcer');
             announcer.textContent = message;
-            // Reset setelah sedikit waktu agar pembacaan bisa diulang jika pesan sama
             setTimeout(() => { announcer.textContent = ''; }, 1000);
         }
 
@@ -633,18 +635,15 @@
             const isOpen = drawer.classList.toggle('open');
             drawerOverlay.classList.toggle('open');
             
-            // Update ARIA
             burgerBtn.setAttribute('aria-expanded', isOpen);
             drawerOverlay.setAttribute('aria-hidden', !isOpen);
             
             if (isOpen) {
                 announceToSR("Menu navigasi dibuka");
-                // Fokus ke elemen pertama dalam drawer
                 setTimeout(() => {
                     drawer.querySelector('a').focus();
                 }, 100);
             } else {
-                // Kembalikan fokus ke tombol burger
                 burgerBtn.focus();
             }
         }
@@ -652,7 +651,6 @@
         burgerBtn.addEventListener('click', toggleDrawer);
         drawerOverlay.addEventListener('click', toggleDrawer);
 
-        // Focus Trap & Escape Key untuk Drawer
         document.addEventListener('keydown', (e) => {
             if (!drawer.classList.contains('open')) return;
 
@@ -666,12 +664,12 @@
                 const firstElement = focusableElements[0];
                 const lastElement = focusableElements[focusableElements.length - 1];
 
-                if (e.shiftKey) { /* shift + tab */
+                if (e.shiftKey) { 
                     if (document.activeElement === firstElement) {
                         lastElement.focus();
                         e.preventDefault();
                     }
-                } else { /* tab */
+                } else { 
                     if (document.activeElement === lastElement) {
                         firstElement.focus();
                         e.preventDefault();
@@ -683,7 +681,7 @@
         // --- REFRESH ANIMATION ---
         const refreshBtn = document.getElementById('refreshBtn');
         refreshBtn.addEventListener('click', function() {
-            if(this.classList.contains('spinning')) return; // Mencegah double click
+            if(this.classList.contains('spinning')) return;
             
             this.classList.add('spinning');
             this.setAttribute('aria-label', 'Memuat ulang data...');
@@ -698,14 +696,10 @@
 
         // --- TABS LOGIC ---
         function switchTab(element) {
-            // Hapus aria-selected="true" dari semua tab
             document.querySelectorAll('.tab-item').forEach(tab => {
                 tab.setAttribute('aria-selected', 'false');
             });
-            // Set tab aktif
             element.setAttribute('aria-selected', 'true');
-            
-            // Visual feedback (opsional, untuk demo)
             announceToSR(`Tab ${element.textContent} dipilih`);
         }
 
@@ -742,7 +736,6 @@
             const card = document.getElementById(cardId);
             if (!card) return;
 
-            // Simpan judul untuk pengumuman
             const title = card.querySelector('.card-title').textContent;
             
             deletedItem = card;
@@ -759,24 +752,15 @@
 
         function showToast() {
             toast.classList.add('show');
-            
-            // Pindahkan fokus ke tombol Undo jika keyboard aktif (opsional UX)
-            // undoBtn.focus(); 
-            
             clearTimeout(toastTimeout);
 
             toastTimeout = setTimeout(() => {
                 hideToast();
-            }, 5000); // Waktu lebih lama agar user punya waktu untuk akses keyboard
+            }, 5000);
         }
 
         function hideToast() {
             toast.classList.remove('show');
-            if (deletedItem) {
-                // Setelah toast hilang benar-benar, baru hapus referensi
-                // setTimeout(() => { deletedItem = null; }, 400); 
-                // Biarkan referensi tetap sampai batas waktu habis
-            }
         }
 
         undoBtn.addEventListener('click', () => {
@@ -785,21 +769,12 @@
                 deletedItem.style.display = 'flex';
                 setTimeout(() => {
                     deletedItem.classList.remove('fade-out-left');
-                    // Fokus ke card yang dipulihkan
                     deletedItem.focus();
                 }, 10);
                 
                 announceToSR(`${title} dipulihkan`);
                 hideToast();
                 deletedItem = null;
-            }
-        });
-        
-        // Handle keyboard "Enter" pada undo btn (meskipun sudah native button, jaga-jaga)
-        undoBtn.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                undoBtn.click();
             }
         });
 
