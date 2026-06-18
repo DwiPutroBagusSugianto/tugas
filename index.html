@@ -3,20 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mobile UI UX Basic</title>
-    <!-- Menggunakan Font Awesome untuk Ikon -->
+    <meta name="description" content="Aplikasi Manajemen Tugas Aksesibel">
+    <title>Mobile UI UX Aksesibel</title>
+    
+    <!-- Font Awesome untuk Ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         /* --- RESET & VARIABLES --- */
         :root {
-            --primary-color: #4F46E5;
-            --primary-dark: #4338ca;
-            --accent-color: #F43F5E;
+            /* Warna dengan rasio kontras tinggi (WCAG AA/AAA) */
+            --primary-color: #2563EB; /* Blue 600 */
+            --primary-dark: #1E40AF;
+            --accent-color: #DC2626; /* Red 600 */
             --bg-color: #F3F4F6;
             --surface-color: #FFFFFF;
-            --text-main: #1F2937;
-            --text-secondary: #6B7280;
+            --text-main: #111827; /* Gray 900 */
+            --text-secondary: #4B5563; /* Gray 600 */
+            --focus-ring: #000000;
+            
             --border-radius: 12px;
             --bottom-nav-height: 60px;
             --header-height: 60px;
@@ -26,11 +31,36 @@
             --transition: all 0.3s ease;
         }
 
+        /* Utilitas Screen Reader Only (SR Only) */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Focus Style Jelas untuk Navigasi Keyboard */
+        *:focus-visible {
+            outline: 3px solid var(--focus-ring);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+
+        /* Hapus outline default browser karena kita pakai focus-visible */
+        *:focus {
+            outline: none;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            -webkit-tap-highlight-color: transparent; /* Hilangkan highlight tap di mobile */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -38,7 +68,8 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             overflow-x: hidden;
-            padding-bottom: calc(var(--bottom-nav-height) + 20px); /* Space agar konten tidak tertutup bottom nav */
+            padding-bottom: calc(var(--bottom-nav-height) + 20px);
+            font-size: 16px; /* Base size yang disarankan aksesibilitas */
         }
 
         /* --- HEADER --- */
@@ -63,25 +94,25 @@
 
         .burger-btn {
             background: none;
-            border: none;
+            border: 2px solid transparent; /* Frame tetap untuk stabilitas layout */
             font-size: 1.2rem;
             color: var(--text-main);
             cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 44px; /* Minimal touch target */
+            height: 44px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition);
         }
 
-        .burger-btn:active {
+        .burger-btn:hover, .burger-btn:focus {
             background-color: var(--bg-color);
         }
 
         .app-title {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--primary-color);
         }
@@ -92,48 +123,63 @@
             color: var(--text-secondary);
             font-size: 1.1rem;
             cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
             transition: var(--transition);
         }
 
         .refresh-btn.spinning i {
             animation: spin 1s linear infinite;
         }
+        
+        .refresh-btn:hover {
+            color: var(--primary-color);
+        }
 
         @keyframes spin {
             100% { transform: rotate(360deg); }
         }
 
-        /* --- TOP APP MENU (SUBMENU) --- */
+        /* --- TOP APP MENU (SUBMENU / CHIPS) --- */
         .top-menu {
             background-color: var(--surface-color);
             padding: 12px 16px;
             overflow-x: auto;
             white-space: nowrap;
-            scrollbar-width: none; /* Hide scrollbar Firefox */
+            scrollbar-width: none;
             border-bottom: 1px solid #e5e7eb;
         }
         
         .top-menu::-webkit-scrollbar {
-            display: none; /* Hide scrollbar Chrome/Safari */
+            display: none;
         }
 
+        /* Menggunakan button untuk aksesibilitas keyboard native */
         .menu-chip {
             display: inline-block;
-            padding: 6px 16px;
+            padding: 8px 16px;
             margin-right: 8px;
             border-radius: 20px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: var(--text-secondary);
             background-color: var(--bg-color);
-            border: 1px solid transparent;
+            border: 2px solid transparent; /* Agar layout tidak bergeser saat focus */
             cursor: pointer;
             transition: var(--transition);
+            font-weight: 600;
+        }
+
+        .menu-chip:hover {
+            background-color: #e5e7eb;
         }
 
         .menu-chip.active {
             background-color: var(--primary-color);
             color: white;
-            font-weight: 600;
         }
 
         /* --- TABS BAR --- */
@@ -142,37 +188,31 @@
             background-color: var(--surface-color);
             padding: 0 16px;
             border-bottom: 1px solid #e5e7eb;
+            role: "tablist";
         }
 
         .tab-item {
-            padding: 14px 0;
+            padding: 16px 0;
             margin-right: 24px;
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: var(--text-secondary);
             cursor: pointer;
             position: relative;
-            font-weight: 500;
+            font-weight: 600;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent; /* Placeholder untuk border */
         }
-
-        .tab-item.active {
+        
+        .tab-item[aria-selected="true"] {
             color: var(--primary-color);
-        }
-
-        .tab-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background-color: var(--primary-color);
-            border-radius: 3px 3px 0 0;
+            border-bottom-color: var(--primary-color);
         }
 
         /* --- MAIN CONTENT & CARDS --- */
         main {
             padding: 16px;
-            max-width: 600px; /* Batas lebar agar rapi di desktop */
+            max-width: 600px;
             margin: 0 auto;
         }
 
@@ -193,12 +233,12 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             position: relative;
             overflow: hidden;
+            border: 1px solid #e5e7eb;
         }
 
-        /* Moveover / Hover Animation effect */
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
+        .card:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
         }
 
         .card-header {
@@ -208,24 +248,25 @@
         }
 
         .card-tag {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--primary-color);
-            background: #e0e7ff;
+            background: #eff6ff;
             padding: 4px 8px;
             border-radius: 4px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .card-title {
-            font-size: 1.1rem;
+            font-size: 1.125rem;
             font-weight: 700;
             margin: 4px 0;
+            color: var(--text-main);
         }
 
         .card-desc {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--text-secondary);
             line-height: 1.5;
         }
@@ -239,21 +280,22 @@
         }
 
         .btn-delete {
-            background: none;
-            border: none;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
             color: var(--accent-color);
-            font-size: 0.9rem;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
+            gap: 8px;
+            padding: 8px 16px;
             border-radius: 6px;
             transition: background 0.2s;
         }
 
-        .btn-delete:hover {
-            background-color: #fef2f2;
+        .btn-delete:hover, .btn-delete:focus {
+            background-color: #FEE2E2;
         }
 
         /* --- BOTTOM MENU --- */
@@ -278,28 +320,35 @@
             justify-content: center;
             text-decoration: none;
             color: var(--text-secondary);
-            font-size: 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 500;
             gap: 4px;
             width: 100%;
             height: 100%;
+            background: none;
+            border: none;
+            cursor: pointer;
         }
 
         .nav-item i {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             margin-bottom: 2px;
             transition: transform 0.2s;
         }
 
-        .nav-item.active {
+        .nav-item[aria-current="page"] {
             color: var(--primary-color);
         }
 
-        .nav-item.active i {
+        .nav-item[aria-current="page"] i {
             transform: translateY(-2px);
         }
 
-        .nav-item:active {
-            background-color: #f9fafb;
+        .nav-item:focus {
+            background-color: #F3F4F6;
+            border-radius: 8px;
+            margin: 4px 8px;
+            height: calc(100% - 8px);
         }
 
         /* --- DRAWER (SIDEBAR) --- */
@@ -354,37 +403,40 @@
         .drawer-link {
             display: flex;
             align-items: center;
-            padding: 12px 24px;
+            padding: 16px 24px;
             text-decoration: none;
             color: var(--text-main);
             font-size: 1rem;
             transition: background 0.2s;
-            gap: 12px;
+            gap: 16px;
+            border-left: 4px solid transparent;
         }
 
-        .drawer-link:hover {
+        .drawer-link:hover, .drawer-link:focus {
             background-color: var(--bg-color);
             color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            outline: none;
         }
 
-        /* --- TOAST NOTIFICATION (UNDO DELETE) --- */
+        /* --- TOAST NOTIFICATION --- */
         .toast {
             position: fixed;
-            bottom: calc(var(--bottom-nav-height) + 20px);
+            bottom: calc(var(--bottom-nav-height) + 24px);
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background-color: #323232;
+            background-color: #1F2937;
             color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
             gap: 16px;
             z-index: 200;
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-size: 0.9rem;
+            font-size: 1rem;
             width: max-content;
             max-width: 90%;
         }
@@ -395,13 +447,20 @@
         }
 
         .btn-undo {
-            background: none;
+            background: rgba(255, 255, 255, 0.1);
             border: none;
-            color: #818cf8;
+            color: white;
             font-weight: bold;
             cursor: pointer;
             text-transform: uppercase;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            padding: 6px 12px;
+            border-radius: 4px;
+        }
+        
+        .btn-undo:hover, .btn-undo:focus {
+            background: rgba(255, 255, 255, 0.2);
+            text-decoration: underline;
         }
 
         /* Animasi Hapus */
@@ -422,79 +481,89 @@
 </head>
 <body>
 
+    <!-- SCREEN READER ANNOUNCER (Penting untuk Accessibility) -->
+    <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
     <!-- HEADER -->
     <header>
         <div class="header-left">
-            <button class="burger-btn" id="burgerBtn" aria-label="Buka Menu">
+            <!-- Burger Button dengan ARIA yang lengkap -->
+            <button class="burger-btn" id="burgerBtn" aria-label="Buka menu navigasi" aria-controls="drawer" aria-expanded="false">
                 <i class="fas fa-bars"></i>
             </button>
-            <div class="app-title">TaskFlow</div>
+            <h1 class="app-title">TaskFlow</h1>
         </div>
-        <button class="refresh-btn" id="refreshBtn" aria-label="Refresh Data">
+        <button class="refresh-btn" id="refreshBtn" aria-label="Muat ulang data">
             <i class="fas fa-sync-alt"></i>
         </button>
     </header>
 
     <!-- TOP APP MENU (SUBMENU) -->
-    <nav class="top-menu" role="navigation" aria-label="Filter Kategori">
-        <span class="menu-chip active" onclick="filterMenu(this)">Semua</span>
-        <span class="menu-chip" onclick="filterMenu(this)">Pekerjaan</span>
-        <span class="menu-chip" onclick="filterMenu(this)">Pribadi</span>
-        <span class="menu-chip" onclick="filterMenu(this)">Ide</span>
-        <span class="menu-chip" onclick="filterMenu(this)">Belanja</span>
+    <nav class="top-menu" role="group" aria-label="Filter Kategori">
+        <button class="menu-chip active" aria-pressed="true" onclick="filterMenu(this)">Semua</button>
+        <button class="menu-chip" aria-pressed="false" onclick="filterMenu(this)">Pekerjaan</button>
+        <button class="menu-chip" aria-pressed="false" onclick="filterMenu(this)">Pribadi</button>
+        <button class="menu-chip" aria-pressed="false" onclick="filterMenu(this)">Ide</button>
+        <button class="menu-chip" aria-pressed="false" onclick="filterMenu(this)">Belanja</button>
     </nav>
 
     <!-- TABS BAR -->
-    <div class="tabs-container">
-        <div class="tab-item active" onclick="switchTab(this)">Aktif</div>
-        <div class="tab-item" onclick="switchTab(this)">Selesai</div>
-        <div class="tab-item" onclick="switchTab(this)">Arsip</div>
+    <div class="tabs-container" role="tablist" aria-label="Tampilan Tugas">
+        <button class="tab-item" role="tab" aria-selected="true" aria-controls="panel-1" id="tab-1" onclick="switchTab(this)">Aktif</button>
+        <button class="tab-item" role="tab" aria-selected="false" aria-controls="panel-2" id="tab-2" onclick="switchTab(this)">Selesai</button>
+        <button class="tab-item" role="tab" aria-selected="false" aria-controls="panel-3" id="tab-3" onclick="switchTab(this)">Arsip</button>
     </div>
 
     <!-- MAIN CONTENT -->
-    <main>
-        <section class="card-list" id="cardContainer">
+    <main id="main-content">
+        <section class="card-list" aria-label="Daftar Tugas">
             
             <!-- CARD 1 -->
-            <article class="card" id="card-1">
+            <article class="card" id="card-1" tabindex="0" aria-labelledby="card-1-title">
                 <div class="card-header">
                     <span class="card-tag">Pekerjaan</span>
-                    <i class="fas fa-ellipsis-h" style="color: #9ca3af; cursor: pointer;"></i>
+                    <button aria-label="Opsi lain untuk Revisi Desain UI" style="background:none; border:none; color:#6B7280; cursor:pointer;">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
                 </div>
-                <h3 class="card-title">Revisi Desain UI</h3>
+                <h3 class="card-title" id="card-1-title">Revisi Desain UI</h3>
                 <p class="card-desc">Perbarui wireframe untuk halaman dashboard sesuai feedback dari klien.</p>
                 <div class="card-actions">
-                    <button class="btn-delete" onclick="deleteItem('card-1')" aria-label="Hapus Item">
+                    <button class="btn-delete" onclick="deleteItem('card-1')" aria-label="Hapus tugas Revisi Desain UI">
                         <i class="far fa-trash-alt"></i> Hapus
                     </button>
                 </div>
             </article>
 
             <!-- CARD 2 -->
-            <article class="card" id="card-2">
+            <article class="card" id="card-2" tabindex="0" aria-labelledby="card-2-title">
                 <div class="card-header">
                     <span class="card-tag" style="color: #D97706; background: #FEF3C7;">Belanja</span>
-                    <i class="fas fa-ellipsis-h" style="color: #9ca3af; cursor: pointer;"></i>
+                    <button aria-label="Opsi lain untuk Belanja Bulanan" style="background:none; border:none; color:#6B7280; cursor:pointer;">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
                 </div>
-                <h3 class="card-title">Belanja Bulanan</h3>
+                <h3 class="card-title" id="card-2-title">Belanja Bulanan</h3>
                 <p class="card-desc">Beli susu, roti, telur, dan buah-buahan di supermarket.</p>
                 <div class="card-actions">
-                    <button class="btn-delete" onclick="deleteItem('card-2')" aria-label="Hapus Item">
+                    <button class="btn-delete" onclick="deleteItem('card-2')" aria-label="Hapus tugas Belanja Bulanan">
                         <i class="far fa-trash-alt"></i> Hapus
                     </button>
                 </div>
             </article>
 
             <!-- CARD 3 -->
-            <article class="card" id="card-3">
+            <article class="card" id="card-3" tabindex="0" aria-labelledby="card-3-title">
                 <div class="card-header">
                     <span class="card-tag" style="color: #059669; background: #D1FAE5;">Pribadi</span>
-                    <i class="fas fa-ellipsis-h" style="color: #9ca3af; cursor: pointer;"></i>
+                    <button aria-label="Opsi lain untuk Lari Pagi" style="background:none; border:none; color:#6B7280; cursor:pointer;">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
                 </div>
-                <h3 class="card-title">Lari Pagi</h3>
+                <h3 class="card-title" id="card-3-title">Lari Pagi</h3>
                 <p class="card-desc">Jogging di taman kota selama 30 menit pagi ini.</p>
                 <div class="card-actions">
-                    <button class="btn-delete" onclick="deleteItem('card-3')" aria-label="Hapus Item">
+                    <button class="btn-delete" onclick="deleteItem('card-3')" aria-label="Hapus tugas Lari Pagi">
                         <i class="far fa-trash-alt"></i> Hapus
                     </button>
                 </div>
@@ -504,28 +573,28 @@
     </main>
 
     <!-- BOTTOM MENU -->
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active">
+    <nav class="bottom-nav" aria-label="Navigasi Bawah">
+        <button class="nav-item" aria-current="page" onclick="setActiveNav(this)">
             <i class="fas fa-home"></i>
             <span>Beranda</span>
-        </a>
-        <a href="#" class="nav-item">
+        </button>
+        <button class="nav-item" aria-current="false" onclick="setActiveNav(this)">
             <i class="fas fa-search"></i>
             <span>Cari</span>
-        </a>
-        <a href="#" class="nav-item">
+        </button>
+        <button class="nav-item" aria-current="false" onclick="setActiveNav(this)">
             <i class="far fa-user"></i>
             <span>Profil</span>
-        </a>
-        <a href="#" class="nav-item">
+        </button>
+        <button class="nav-item" aria-current="false" onclick="setActiveNav(this)">
             <i class="fas fa-cog"></i>
             <span>Setelan</span>
-        </a>
+        </button>
     </nav>
 
     <!-- DRAWER (BURGER MENU) -->
-    <div class="drawer-overlay" id="drawerOverlay"></div>
-    <aside class="drawer" id="drawer">
+    <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Menu Utama">
         <div class="drawer-header">
             <h2 style="font-size: 1.2rem;">Menu Utama</h2>
             <p style="font-size: 0.85rem; opacity: 0.8;">Selamat datang kembali!</p>
@@ -539,63 +608,129 @@
         </nav>
     </aside>
 
-    <!-- TOAST NOTIFICATION (Custom Alert/Undo) -->
-    <div class="toast" id="toast">
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast" id="toast" role="status" aria-live="polite">
         <span id="toastMessage">Item dihapus</span>
         <button class="btn-undo" id="undoBtn">Batal</button>
     </div>
 
     <script>
+        // --- UTILITAS: SCREEN READER ANNOUNCER ---
+        // Fungsi untuk membacakan teks ke Screen Reader
+        function announceToSR(message) {
+            const announcer = document.getElementById('sr-announcer');
+            announcer.textContent = message;
+            // Reset setelah sedikit waktu agar pembacaan bisa diulang jika pesan sama
+            setTimeout(() => { announcer.textContent = ''; }, 1000);
+        }
+
         // --- BURGER MENU & DRAWER LOGIC ---
         const burgerBtn = document.getElementById('burgerBtn');
         const drawer = document.getElementById('drawer');
         const drawerOverlay = document.getElementById('drawerOverlay');
 
         function toggleDrawer() {
-            drawer.classList.toggle('open');
+            const isOpen = drawer.classList.toggle('open');
             drawerOverlay.classList.toggle('open');
+            
+            // Update ARIA
+            burgerBtn.setAttribute('aria-expanded', isOpen);
+            drawerOverlay.setAttribute('aria-hidden', !isOpen);
+            
+            if (isOpen) {
+                announceToSR("Menu navigasi dibuka");
+                // Fokus ke elemen pertama dalam drawer
+                setTimeout(() => {
+                    drawer.querySelector('a').focus();
+                }, 100);
+            } else {
+                // Kembalikan fokus ke tombol burger
+                burgerBtn.focus();
+            }
         }
 
         burgerBtn.addEventListener('click', toggleDrawer);
         drawerOverlay.addEventListener('click', toggleDrawer);
 
+        // Focus Trap & Escape Key untuk Drawer
+        document.addEventListener('keydown', (e) => {
+            if (!drawer.classList.contains('open')) return;
+
+            if (e.key === 'Escape') {
+                toggleDrawer();
+                return;
+            }
+
+            if (e.key === 'Tab') {
+                const focusableElements = drawer.querySelectorAll('a, button');
+                const firstElement = focusableElements[0];
+                const lastElement = focusableElements[focusableElements.length - 1];
+
+                if (e.shiftKey) { /* shift + tab */
+                    if (document.activeElement === firstElement) {
+                        lastElement.focus();
+                        e.preventDefault();
+                    }
+                } else { /* tab */
+                    if (document.activeElement === lastElement) {
+                        firstElement.focus();
+                        e.preventDefault();
+                    }
+                }
+            }
+        });
+
         // --- REFRESH ANIMATION ---
         const refreshBtn = document.getElementById('refreshBtn');
         refreshBtn.addEventListener('click', function() {
+            if(this.classList.contains('spinning')) return; // Mencegah double click
+            
             this.classList.add('spinning');
-            // Simulasi loading data
+            this.setAttribute('aria-label', 'Memuat ulang data...');
+            announceToSR("Memuat ulang data");
+
             setTimeout(() => {
                 this.classList.remove('spinning');
+                this.setAttribute('aria-label', 'Muat ulang data');
+                announceToSR("Data berhasil dimuat ulang");
             }, 1500);
         });
 
         // --- TABS LOGIC ---
         function switchTab(element) {
-            // Hapus kelas active dari semua tab
+            // Hapus aria-selected="true" dari semua tab
             document.querySelectorAll('.tab-item').forEach(tab => {
-                tab.classList.remove('active');
+                tab.setAttribute('aria-selected', 'false');
             });
-            // Tambah kelas active ke tab yang diklik
-            element.classList.add('active');
+            // Set tab aktif
+            element.setAttribute('aria-selected', 'true');
+            
+            // Visual feedback (opsional, untuk demo)
+            announceToSR(`Tab ${element.textContent} dipilih`);
         }
 
         // --- SUBMENU (CHIPS) LOGIC ---
         function filterMenu(element) {
             document.querySelectorAll('.menu-chip').forEach(chip => {
+                chip.setAttribute('aria-pressed', 'false');
                 chip.classList.remove('active');
             });
+            element.setAttribute('aria-pressed', 'true');
             element.classList.add('active');
+            announceToSR(`Filter ${element.textContent} diterapkan`);
         }
 
         // --- BOTTOM NAV INTERACTION ---
-        const navItems = document.querySelectorAll('.nav-item');
-        navItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault(); // Mencegah reload link
-                navItems.forEach(nav => nav.classList.remove('active'));
-                item.classList.add('active');
+        function setActiveNav(element) {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.setAttribute('aria-current', 'false');
             });
-        });
+            element.setAttribute('aria-current', 'page');
+            
+            const label = element.querySelector('span').textContent;
+            announceToSR(`Navigasi ke ${label}`);
+        }
 
         // --- UNDO DELETE LOGIC ---
         let deletedItem = null;
@@ -607,16 +742,16 @@
             const card = document.getElementById(cardId);
             if (!card) return;
 
-            // Simpan referensi elemen untuk fungsi undo
+            // Simpan judul untuk pengumuman
+            const title = card.querySelector('.card-title').textContent;
+            
             deletedItem = card;
-
-            // Animasi hapus
             card.classList.add('fade-out-left');
 
-            // Tampilkan Toast
+            announceToSR(`${title} dihapus. Tekan tombol batal untuk memulihkan.`);
+
             showToast();
 
-            // Hapus dari DOM setelah animasi selesai
             setTimeout(() => {
                 card.style.display = 'none';
             }, 500);
@@ -625,30 +760,46 @@
         function showToast() {
             toast.classList.add('show');
             
-            // Reset timer jika user menghapus item lain saat toast muncul
+            // Pindahkan fokus ke tombol Undo jika keyboard aktif (opsional UX)
+            // undoBtn.focus(); 
+            
             clearTimeout(toastTimeout);
 
-            // Sembunyikan toast otomatis setelah 4 detik
             toastTimeout = setTimeout(() => {
                 hideToast();
-            }, 4000);
+            }, 5000); // Waktu lebih lama agar user punya waktu untuk akses keyboard
         }
 
         function hideToast() {
             toast.classList.remove('show');
-            deletedItem = null;
+            if (deletedItem) {
+                // Setelah toast hilang benar-benar, baru hapus referensi
+                // setTimeout(() => { deletedItem = null; }, 400); 
+                // Biarkan referensi tetap sampai batas waktu habis
+            }
         }
 
         undoBtn.addEventListener('click', () => {
             if (deletedItem) {
-                // Kembalikan item
+                const title = deletedItem.querySelector('.card-title').textContent;
                 deletedItem.style.display = 'flex';
-                // Sedikit delay agar transisi CSS bisa berjalan (hilangkan class fade-out)
                 setTimeout(() => {
                     deletedItem.classList.remove('fade-out-left');
+                    // Fokus ke card yang dipulihkan
+                    deletedItem.focus();
                 }, 10);
                 
+                announceToSR(`${title} dipulihkan`);
                 hideToast();
+                deletedItem = null;
+            }
+        });
+        
+        // Handle keyboard "Enter" pada undo btn (meskipun sudah native button, jaga-jaga)
+        undoBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                undoBtn.click();
             }
         });
 
